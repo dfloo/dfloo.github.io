@@ -3,8 +3,9 @@ import "../stylesheets/keyboard.css";
 
 import Sound from './sound';
 import Keys from './keys';
+import Canvas from './canvas';
 
-import { getFreq } from './util'
+import { getFreq, getColor } from './util'
 
 
 class Keyboard extends React.Component {
@@ -12,8 +13,14 @@ class Keyboard extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      vis: 1
+    }
+
+    this.child = React.createRef();
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     this.playSound = this.playSound.bind(this);
+    this.handleAnimation = this.handleAnimation.bind(this)
   }
 
   componentDidMount() {
@@ -35,7 +42,7 @@ class Keyboard extends React.Component {
       let note = new Sound(this.ctx);
       let now = this.ctx.currentTime;
       note.play(freq, now);
-      note.stop(now + 2);
+      note.stop(now);
     }
   }
 
@@ -43,17 +50,26 @@ class Keyboard extends React.Component {
     console.log(key);
     const freq = getFreq(key);
     this.playSound(freq);
+    this.handleAnimation(key);1
+  }
+
+  handleAnimation(key) {
+    // this.child.drawRainbow(getColor(key));
+    this.child.drawChangingRainbow();
   }
 
   render() {
 
     return (
-      <div className='keyboard'>
-        <div className='keyboard-nav'>
-          <h1>Settings</h1>
-        </div>
-        <div className='keyboard-inner'>
-          <Keys />
+      <div className='audio-visual-div'>
+        <Canvas onRef={ref => (this.child = ref)}/>
+        <div className='keyboard'>
+          <div className='keyboard-nav'>
+            <h1>Settings</h1>
+          </div>
+          <div className='keyboard-inner'>
+            <Keys />
+          </div>
         </div>
       </div>
     );

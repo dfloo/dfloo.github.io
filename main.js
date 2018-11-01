@@ -117,19 +117,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-function rect(props) {
-  var ctx = props.ctx,
-      x = props.x,
-      y = props.y,
-      width = props.width,
-      height = props.height;
-  ctx.fillRect(x, y, width, height);
-}
-
-var canvasStyle = {
-  border: '1px solid pink'
-};
-
 var Canvas =
 /*#__PURE__*/
 function (_React$Component) {
@@ -144,30 +131,82 @@ function (_React$Component) {
   _createClass(Canvas, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.updateCanvas();
+      this.props.onRef(this);
+      this.initializeCanvas();
     }
   }, {
-    key: "updateCanvas",
-    value: function updateCanvas() {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.props.onRef(undefined);
+    }
+  }, {
+    key: "initializeCanvas",
+    value: function initializeCanvas() {
       var ctx = this.refs.canvas.getContext('2d');
       ctx.canvas.width = window.innerWidth * 0.7;
       ctx.canvas.height = window.innerHeight * 0.4;
-      ctx.clearRect(0, 0, 500, 500); // draw children “components”
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.font = '40px Arial';
+      ctx.fillText('Musical Typewriter', ctx.canvas.width / 2 - 200, 150);
+    }
+  }, {
+    key: "drawRainbow",
+    value: function drawRainbow(color) {
+      var ctx = this.refs.canvas.getContext("2d");
+      ctx.canvas.width = window.innerWidth * 0.7;
+      ctx.canvas.height = window.innerHeight * 0.4;
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      var mid = [ctx.canvas.width / 2, ctx.canvas.height];
+      var radius = 0;
 
-      rect({
-        ctx: ctx,
-        x: 10,
-        y: 10,
-        width: 50,
-        height: 50
-      });
-      rect({
-        ctx: ctx,
-        x: 110,
-        y: 110,
-        width: 50,
-        height: 50
-      });
+      function draw() {
+        ctx.fillStyle = 'hsl(' + color + ', 100%,55%)';
+        ctx.beginPath();
+        ctx.arc(mid[0], mid[1], radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+        radius += 2;
+
+        if (radius <= ctx.canvas.width * 0.68) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+      }
+
+      draw();
+    }
+  }, {
+    key: "drawChangingRainbow",
+    value: function drawChangingRainbow() {
+      var ctx = this.refs.canvas.getContext("2d");
+      ctx.canvas.width = window.innerWidth * 0.7;
+      ctx.canvas.height = window.innerHeight * 0.4;
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      var mid = [ctx.canvas.width / 2, ctx.canvas.height];
+      var radius = 0;
+      var color = 0;
+
+      function draw() {
+        ctx.fillStyle = 'hsl(' + color++ + ', 100%,55%)';
+        ctx.beginPath();
+        ctx.arc(mid[0], mid[1], radius, 0, 2 * Math.PI, false);
+        ctx.fill();
+        radius += 2;
+
+        if (radius <= ctx.canvas.width * 0.68) {
+          requestAnimationFrame(draw);
+        } else {
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+      }
+
+      draw();
+    }
+  }, {
+    key: "clearCanvas",
+    value: function clearCanvas() {
+      var ctx = this.refs.canvas.getContext("2d");
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     }
   }, {
     key: "render",
@@ -177,8 +216,7 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("canvas", {
         ref: "canvas",
         width: "0",
-        height: "0",
-        style: canvasStyle
+        height: "0"
       }));
     }
   }]);
@@ -205,7 +243,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _stylesheets_keyboard_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_stylesheets_keyboard_css__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _sound__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sound */ "./components/sound.js");
 /* harmony import */ var _keys__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./keys */ "./components/keys.jsx");
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./util */ "./components/util.js");
+/* harmony import */ var _canvas__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./canvas */ "./components/canvas.jsx");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./util */ "./components/util.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -230,6 +269,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 
+
 var Keyboard =
 /*#__PURE__*/
 function (_React$Component) {
@@ -241,8 +281,13 @@ function (_React$Component) {
     _classCallCheck(this, Keyboard);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Keyboard).call(this, props));
+    _this.state = {
+      vis: 1
+    };
+    _this.child = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     _this.playSound = _this.playSound.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.handleAnimation = _this.handleAnimation.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -276,26 +321,42 @@ function (_React$Component) {
         var note = new _sound__WEBPACK_IMPORTED_MODULE_2__["default"](this.ctx);
         var now = this.ctx.currentTime;
         note.play(freq, now);
-        note.stop(now + 2);
+        note.stop(now);
       }
     }
   }, {
     key: "playKeySound",
     value: function playKeySound(key) {
       console.log(key);
-      var freq = Object(_util__WEBPACK_IMPORTED_MODULE_4__["getFreq"])(key);
+      var freq = Object(_util__WEBPACK_IMPORTED_MODULE_5__["getFreq"])(key);
       this.playSound(freq);
+      this.handleAnimation(key);
+      1;
+    }
+  }, {
+    key: "handleAnimation",
+    value: function handleAnimation(key) {
+      // this.child.drawRainbow(getColor(key));
+      this.child.drawChangingRainbow();
     }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "audio-visual-div"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_canvas__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        onRef: function onRef(ref) {
+          return _this3.child = ref;
+        }
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-nav"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Settings")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-inner"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_keys__WEBPACK_IMPORTED_MODULE_3__["default"], null)));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_keys__WEBPACK_IMPORTED_MODULE_3__["default"], null))));
     }
   }]);
 
@@ -547,11 +608,9 @@ function (_React$Component) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _canvas__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./canvas */ "./components/canvas.jsx");
-/* harmony import */ var _keyboard__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./keyboard */ "./components/keyboard.jsx");
-/* harmony import */ var _stylesheets_root_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../stylesheets/root.css */ "./stylesheets/root.css");
-/* harmony import */ var _stylesheets_root_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_stylesheets_root_css__WEBPACK_IMPORTED_MODULE_3__);
-
+/* harmony import */ var _keyboard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./keyboard */ "./components/keyboard.jsx");
+/* harmony import */ var _stylesheets_root_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../stylesheets/root.css */ "./stylesheets/root.css");
+/* harmony import */ var _stylesheets_root_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_stylesheets_root_css__WEBPACK_IMPORTED_MODULE_2__);
 
 
 
@@ -559,7 +618,7 @@ __webpack_require__.r(__webpack_exports__);
 var Root = function Root() {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "main-div"
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Musical Typewriter"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_canvas__WEBPACK_IMPORTED_MODULE_1__["default"], null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_keyboard__WEBPACK_IMPORTED_MODULE_2__["default"], null));
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_keyboard__WEBPACK_IMPORTED_MODULE_1__["default"], null));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Root);
@@ -627,12 +686,13 @@ function () {
 /*!****************************!*\
   !*** ./components/util.js ***!
   \****************************/
-/*! exports provided: getFreq */
+/*! exports provided: getFreq, getColor */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFreq", function() { return getFreq; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getColor", function() { return getColor; });
 var keyFreqMap = {
   '1': 138.59,
   '2': 155.56,
@@ -674,6 +734,48 @@ var keyFreqMap = {
 };
 var getFreq = function getFreq(key) {
   return keyFreqMap[key];
+};
+var keyColorMap = {
+  '1': 0,
+  '2': 10,
+  '4': 20,
+  '5': 30,
+  '6': 40,
+  '8': 50,
+  '9': 60,
+  'Tab': 70,
+  'q': 80,
+  'w': 90,
+  'e': 100,
+  'r': 110,
+  't': 120,
+  'y': 130,
+  'u': 140,
+  'i': 150,
+  'o': 160,
+  'p': 170,
+  'a': 180,
+  's': 190,
+  'd': 200,
+  'g': 210,
+  'h': 220,
+  'k': 230,
+  'l': 240,
+  ';': 250,
+  'z': 260,
+  'x': 270,
+  'c': 280,
+  'v': 290,
+  'b': 300,
+  'n': 310,
+  'm': 320,
+  ',': 330,
+  '.': 340,
+  '/': 350,
+  'Shift': 360
+};
+var getColor = function getColor(key) {
+  return keyColorMap[key];
 };
 
 /***/ }),
@@ -1191,7 +1293,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ".keyboard {\n  width: 70vw;\n  padding-top: 5vh;\n  padding-bottom: 6vh;\n  border: 1px solid #4a4a4a;\n  border-radius: 10px;\n  box-shadow: 0 0 5px #2e2e2e;\n  background-color: gray;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.keyboard-nav {\n  width: 60vw;\n  height: 50px;\n  display: block;\n  border: 1px solid black;\n  padding: 1vw;\n}", ""]);
+exports.push([module.i, ".keyboard {\n  width: 70vw;\n  padding-top: 5vh;\n  padding-bottom: 6vh;\n  border: 1px solid #4a4a4a;\n  border-radius: 10px;\n  box-shadow: 0 0 5px #2e2e2e;\n  background-color: #2e2e2e;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.keyboard-nav {\n  width: 60vw;\n  height: 50px;\n  display: block;\n  border: 1px solid black;\n  background-color: gray;\n  padding: 1vw;\n}", ""]);
 
 // exports
 

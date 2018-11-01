@@ -1,0 +1,45 @@
+.keys {
+  width: 60vw;
+  --total-width: 60vw;
+  background-color: lightgray;
+  border: 1px solid #4a4a4a;
+  border-radius: 5px;
+  padding: 1vw;
+  box-shadow: inset 0 0 5px black;
+
+}
+
+.keys img {
+  max-height: calc(var(--total-width) * (60 / 930));
+  width: auto;
+  height: auto;
+  margin-right: calc(var(--total-width) * (10 / 930));
+  border-radius: 5px;
+  box-shadow: 0 0 5px black;
+}
+
+.row1 {
+  display: flex;
+  padding-left: calc(var(--total-width) * (70 / 930));
+  padding-bottom: calc(var(--total-width) * (10 / 930));
+}
+
+.row2 {
+  display: flex;
+  padding-bottom: calc(var(--total-width) * (10 / 930));
+}
+
+.row3 {
+  display: flex;
+  padding-left: calc(var(--total-width) * (120 / 930));
+  padding-bottom: calc(var(--total-width) * (10 / 930));
+}
+
+.row4 {
+  display: flex;
+  padding-left: calc(var(--total-width) * (140 / 930));
+}
+
+.extra-space {
+  margin-left: calc(var(--total-width) * (70 / 930));
+}

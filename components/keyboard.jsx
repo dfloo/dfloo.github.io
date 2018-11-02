@@ -15,7 +15,8 @@ class Keyboard extends React.Component {
 
     this.state = {
       vis: 3,
-      wave: 'sine'
+      wave: 'sine',
+      vol: 10
     }
 
     this.child = React.createRef();

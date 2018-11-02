@@ -82,7 +82,7 @@ class Canvas extends React.Component {
 
   drawFire() {
     const ctx = this.refs.canvas.getContext("2d");
-    
+    const time = Date.now();
     ctx.canvas.width = window.innerWidth * 0.7;
     ctx.canvas.height = window.innerHeight * 0.4;
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -90,7 +90,7 @@ class Canvas extends React.Component {
     ctx.globalCompositeOperation='lighter';
 
     const particles = [];
-    const speed = 3;
+    const speed = 4;
     const size = 20;
     const max = 60;
     
@@ -108,7 +108,7 @@ class Canvas extends React.Component {
       ctx.canvas.height
     ]
     
-    const startFire = setInterval(() => {
+    const startFire = () => {
       for (let i = 0; i < 10; i++) {
         const options = [
           start[0],
@@ -138,12 +138,14 @@ class Canvas extends React.Component {
           i--;
         }
       }
-    }, 40);
+      if (Date.now() < time + 1000) {
+        requestAnimationFrame(startFire)
+      } else {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      }
+    }
 
-    setTimeout(()=>{
-      clearInterval(startFire);
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    }, 1000);
+    startFire();
   }
   
   render() {

@@ -210,12 +210,13 @@ function (_React$Component) {
     key: "drawFire",
     value: function drawFire() {
       var ctx = this.refs.canvas.getContext("2d");
+      var time = Date.now();
       ctx.canvas.width = window.innerWidth * 0.7;
       ctx.canvas.height = window.innerHeight * 0.4;
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.globalCompositeOperation = 'lighter';
       var particles = [];
-      var speed = 3;
+      var speed = 4;
       var size = 20;
       var max = 60;
 
@@ -228,7 +229,8 @@ function (_React$Component) {
       }
 
       var start = [Math.random() * ctx.canvas.width, ctx.canvas.height];
-      var startFire = setInterval(function () {
+
+      var startFire = function startFire() {
         for (var i = 0; i < 10; i++) {
           var options = [start[0], start[1], (Math.random() * 2 * speed - speed) / 2, 0 - Math.random() * 2 * speed];
 
@@ -253,11 +255,15 @@ function (_React$Component) {
             _i--;
           }
         }
-      }, 40);
-      setTimeout(function () {
-        clearInterval(startFire);
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      }, 1000);
+
+        if (Date.now() < time + 1000) {
+          requestAnimationFrame(startFire);
+        } else {
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+      };
+
+      startFire();
     }
   }, {
     key: "render",
@@ -432,7 +438,8 @@ function (_React$Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Keyboard).call(this, props));
     _this.state = {
       vis: 3,
-      wave: 'sine'
+      wave: 'sine',
+      vol: 10
     };
     _this.child = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.ctx = new (window.AudioContext || window.webkitAudioContext)();

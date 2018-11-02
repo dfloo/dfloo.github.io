@@ -147,26 +147,26 @@ function (_React$Component) {
       ctx.canvas.height = window.innerHeight * 0.4;
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.font = '40px Arial';
-      ctx.fillText('Musical Typewriter', ctx.canvas.width / 2 - 200, 150);
+      ctx.fillText('Welcome to Musical Typewriter', ctx.canvas.width / 2 - 300, 250);
     }
   }, {
-    key: "drawRainbow",
-    value: function drawRainbow(color) {
+    key: "drawCircle",
+    value: function drawCircle(color) {
       var ctx = this.refs.canvas.getContext("2d");
       ctx.canvas.width = window.innerWidth * 0.7;
       ctx.canvas.height = window.innerHeight * 0.4;
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      var mid = [ctx.canvas.width / 2, ctx.canvas.height];
+      var mid = [Math.floor(Math.random() * ctx.canvas.width), Math.floor(Math.random() * ctx.canvas.height)];
       var radius = 0;
 
       function draw() {
-        ctx.fillStyle = 'hsl(' + color + ', 100%,55%)';
+        ctx.fillStyle = 'hsl(' + color++ + ', 100%,55%)';
         ctx.beginPath();
         ctx.arc(mid[0], mid[1], radius, 0, 2 * Math.PI, false);
         ctx.fill();
         radius += 2;
 
-        if (radius <= ctx.canvas.width * 0.68) {
+        if (radius <= ctx.canvas.width * 0.1) {
           requestAnimationFrame(draw);
         } else {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -176,8 +176,8 @@ function (_React$Component) {
       draw();
     }
   }, {
-    key: "drawChangingRainbow",
-    value: function drawChangingRainbow() {
+    key: "drawRainbow",
+    value: function drawRainbow() {
       var ctx = this.refs.canvas.getContext("2d");
       ctx.canvas.width = window.innerWidth * 0.7;
       ctx.canvas.height = window.innerHeight * 0.4;
@@ -203,12 +203,6 @@ function (_React$Component) {
       draw();
     }
   }, {
-    key: "clearCanvas",
-    value: function clearCanvas() {
-      var ctx = this.refs.canvas.getContext("2d");
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    }
-  }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -228,6 +222,104 @@ function (_React$Component) {
 
 /***/ }),
 
+/***/ "./components/keyboard-util.js":
+/*!*************************************!*\
+  !*** ./components/keyboard-util.js ***!
+  \*************************************/
+/*! exports provided: getFreq, getColor */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFreq", function() { return getFreq; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getColor", function() { return getColor; });
+var keyFreqMap = {
+  '1': 138.59,
+  '2': 155.56,
+  '4': 185,
+  '5': 207.65,
+  '6': 233.08,
+  '8': 277.18,
+  '9': 311.13,
+  'Tab': 130.81,
+  'q': 146.83,
+  'w': 164.81,
+  'e': 174.61,
+  'r': 196,
+  't': 220,
+  'y': 246.94,
+  'u': 261.63,
+  'i': 293.66,
+  'o': 329.63,
+  'p': 349.23,
+  'a': 369.99,
+  's': 415.3,
+  'd': 466.16,
+  'g': 554.37,
+  'h': 622.25,
+  'k': 739.99,
+  'l': 830.61,
+  ';': 932.33,
+  'z': 392,
+  'x': 440,
+  'c': 493.88,
+  'v': 523.33,
+  'b': 587.33,
+  'n': 659.25,
+  'm': 698.46,
+  ',': 783.99,
+  '.': 880,
+  '/': 987.77,
+  'Shift': 1046.5
+};
+var getFreq = function getFreq(key) {
+  return keyFreqMap[key];
+};
+var keyColorMap = {
+  'Tab': 0,
+  '1': 10,
+  'q': 20,
+  '2': 30,
+  'w': 40,
+  'e': 50,
+  '4': 60,
+  'r': 70,
+  '5': 80,
+  't': 90,
+  '6': 100,
+  'y': 110,
+  'u': 120,
+  '8': 130,
+  'i': 140,
+  '9': 150,
+  'o': 160,
+  'p': 170,
+  'a': 180,
+  'z': 190,
+  's': 200,
+  'x': 210,
+  'd': 220,
+  'c': 230,
+  'v': 240,
+  'g': 250,
+  'b': 260,
+  'h': 270,
+  'n': 280,
+  'm': 290,
+  'k': 300,
+  ',': 310,
+  'l': 320,
+  '.': 330,
+  ';': 340,
+  '/': 350,
+  'Shift': 360
+};
+var getColor = function getColor(key) {
+  return keyColorMap[key];
+};
+
+/***/ }),
+
 /***/ "./components/keyboard.jsx":
 /*!*********************************!*\
   !*** ./components/keyboard.jsx ***!
@@ -244,7 +336,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _sound__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sound */ "./components/sound.js");
 /* harmony import */ var _keys__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./keys */ "./components/keys.jsx");
 /* harmony import */ var _canvas__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./canvas */ "./components/canvas.jsx");
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./util */ "./components/util.js");
+/* harmony import */ var _keyboard_util__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./keyboard-util */ "./components/keyboard-util.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -282,7 +374,8 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Keyboard).call(this, props));
     _this.state = {
-      vis: 1
+      vis: 2,
+      wave: 'square'
     };
     _this.child = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -300,7 +393,7 @@ function (_React$Component) {
 
       var _loop = function _loop(i) {
         keys[i].addEventListener('click', function () {
-          _this2.playSound(keys[i].getAttribute('data-freq'));
+          _this2.playSound(keys[i].getAttribute('data-key'));
         });
       };
 
@@ -311,33 +404,38 @@ function (_React$Component) {
       document.addEventListener('keydown', function (e) {
         e.preventDefault();
 
-        _this2.playKeySound(e.key);
+        _this2.playSound(e.key);
       });
     }
   }, {
     key: "playSound",
-    value: function playSound(freq) {
+    value: function playSound(key) {
+      var freq = Object(_keyboard_util__WEBPACK_IMPORTED_MODULE_5__["getFreq"])(key);
+
       if (freq) {
-        var note = new _sound__WEBPACK_IMPORTED_MODULE_2__["default"](this.ctx);
+        var note = new _sound__WEBPACK_IMPORTED_MODULE_2__["default"](this.ctx, this.state.wave);
         var now = this.ctx.currentTime;
         note.play(freq, now);
         note.stop(now);
       }
-    }
-  }, {
-    key: "playKeySound",
-    value: function playKeySound(key) {
-      console.log(key);
-      var freq = Object(_util__WEBPACK_IMPORTED_MODULE_5__["getFreq"])(key);
-      this.playSound(freq);
+
       this.handleAnimation(key);
-      1;
     }
   }, {
     key: "handleAnimation",
     value: function handleAnimation(key) {
-      // this.child.drawRainbow(getColor(key));
-      this.child.drawChangingRainbow();
+      switch (this.state.vis) {
+        case 1:
+          this.child.drawCircle(Object(_keyboard_util__WEBPACK_IMPORTED_MODULE_5__["getColor"])(key));
+          break;
+
+        case 2:
+          this.child.drawRainbow();
+          break;
+
+        default:
+          this.child.drawRainbow();
+      }
     }
   }, {
     key: "render",
@@ -354,7 +452,7 @@ function (_React$Component) {
         className: "keyboard"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-nav"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, "Settings")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Volume"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Synth Wave"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Filter"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Visualization"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "About")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-inner"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_keys__WEBPACK_IMPORTED_MODULE_3__["default"], null))));
     }
@@ -433,157 +531,157 @@ function (_React$Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row1"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "138.59",
+        "data-key": "1",
         className: "key",
         src: images["1.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "155.56",
+        "data-key": "2",
         className: "key",
         src: images["2.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "185",
+        "data-key": "4",
         className: "key extra-space",
         src: images["4.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "207.65",
+        "data-key": "5",
         className: "key",
         src: images["5.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "233.08",
+        "data-key": "6",
         className: "key",
         src: images["6.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "277.18",
+        "data-key": "8",
         className: "key extra-space",
         src: images["8.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "311.13",
+        "data-key": "9",
         className: "key",
         src: images["9.png"]
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row2"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "130.81",
+        "data-key": "Tab",
         className: "key",
         src: images["tab.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "146.83",
+        "data-key": "q",
         className: "key",
         src: images["q.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "164.81",
+        "data-key": "w",
         className: "key",
         src: images["w.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "174.61",
+        "data-key": "e",
         className: "key",
         src: images["e.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "196",
+        "data-key": "r",
         className: "key",
         src: images["r.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "220",
+        "data-key": "t",
         className: "key",
         src: images["t.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "246.94",
+        "data-key": "y",
         className: "key",
         src: images["y.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "261.63",
+        "data-key": "u",
         className: "key",
         src: images["u.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "293.66",
+        "data-key": "i",
         className: "key",
         src: images["i.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "329.63",
+        "data-key": "o",
         className: "key",
         src: images["o.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "349.23",
+        "data-key": "p",
         className: "key",
         src: images["p.png"]
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row3"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "369.99",
+        "data-key": "a",
         className: "key",
         src: images["a.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "415.3",
+        "data-key": "s",
         className: "key",
         src: images["s.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "466.16",
+        "data-key": "d",
         className: "key",
         src: images["d.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "554.37",
+        "data-key": "g",
         className: "key extra-space",
         src: images["g.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "622.25",
+        "data-key": "h",
         className: "key",
         src: images["h.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "739.99",
+        "data-key": "k",
         className: "key extra-space",
         src: images["k.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "830.61",
+        "data-key": "l",
         className: "key",
         src: images["l.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "932.33",
+        "data-key": ";",
         className: "key",
         src: images["semi.png"]
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row4"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "392",
+        "data-key": "z",
         className: "key",
         src: images["z.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "440",
+        "data-key": "x",
         className: "key",
         src: images["x.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "493.88",
+        "data-key": "c",
         className: "key",
         src: images["c.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "523.25",
+        "data-key": "v",
         className: "key",
         src: images["v.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "587.33",
+        "data-key": "b",
         className: "key",
         src: images["b.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "659.25",
+        "data-key": "n",
         className: "key",
         src: images["n.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "698.46",
+        "data-key": "m",
         className: "key",
         src: images["m.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "783.99",
+        "data-key": ",",
         className: "key",
         src: images["comma.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "880",
+        "data-key": ".",
         className: "key",
         src: images["period.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "987.77",
+        "data-key": "/",
         className: "key",
         src: images["slash.png"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        "data-freq": "1046.5",
+        "data-key": "Shift",
         className: "key",
         src: images["shift.png"]
       })));
@@ -643,10 +741,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Sound =
 /*#__PURE__*/
 function () {
-  function Sound(ctx) {
+  function Sound(ctx, wave) {
     _classCallCheck(this, Sound);
 
     this.ctx = ctx;
+    this.wave = wave;
   }
 
   _createClass(Sound, [{
@@ -656,7 +755,7 @@ function () {
       this.gainNode = this.ctx.createGain();
       this.oscillator.connect(this.gainNode);
       this.gainNode.connect(this.ctx.destination);
-      this.oscillator.type = 'sine';
+      this.oscillator.type = this.wave;
     }
   }, {
     key: "play",
@@ -679,104 +778,6 @@ function () {
 }();
 
 /* harmony default export */ __webpack_exports__["default"] = (Sound);
-
-/***/ }),
-
-/***/ "./components/util.js":
-/*!****************************!*\
-  !*** ./components/util.js ***!
-  \****************************/
-/*! exports provided: getFreq, getColor */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFreq", function() { return getFreq; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getColor", function() { return getColor; });
-var keyFreqMap = {
-  '1': 138.59,
-  '2': 155.56,
-  '4': 185,
-  '5': 207.65,
-  '6': 233.08,
-  '8': 277.18,
-  '9': 311.13,
-  'Tab': 130.81,
-  'q': 146.83,
-  'w': 164.81,
-  'e': 174.61,
-  'r': 196,
-  't': 220,
-  'y': 246.94,
-  'u': 261.63,
-  'i': 293.66,
-  'o': 329.63,
-  'p': 349.23,
-  'a': 369.99,
-  's': 415.3,
-  'd': 466.16,
-  'g': 554.37,
-  'h': 622.25,
-  'k': 739.99,
-  'l': 830.61,
-  ';': 932.33,
-  'z': 392,
-  'x': 440,
-  'c': 493.88,
-  'v': 523.33,
-  'b': 587.33,
-  'n': 659.25,
-  'm': 698.46,
-  ',': 783.99,
-  '.': 880,
-  '/': 987.77,
-  'Shift': 1046.5
-};
-var getFreq = function getFreq(key) {
-  return keyFreqMap[key];
-};
-var keyColorMap = {
-  '1': 0,
-  '2': 10,
-  '4': 20,
-  '5': 30,
-  '6': 40,
-  '8': 50,
-  '9': 60,
-  'Tab': 70,
-  'q': 80,
-  'w': 90,
-  'e': 100,
-  'r': 110,
-  't': 120,
-  'y': 130,
-  'u': 140,
-  'i': 150,
-  'o': 160,
-  'p': 170,
-  'a': 180,
-  's': 190,
-  'd': 200,
-  'g': 210,
-  'h': 220,
-  'k': 230,
-  'l': 240,
-  ';': 250,
-  'z': 260,
-  'x': 270,
-  'c': 280,
-  'v': 290,
-  'b': 300,
-  'n': 310,
-  'm': 320,
-  ',': 330,
-  '.': 340,
-  '/': 350,
-  'Shift': 360
-};
-var getColor = function getColor(key) {
-  return keyColorMap[key];
-};
 
 /***/ }),
 
@@ -1293,7 +1294,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ".keyboard {\n  width: 70vw;\n  padding-top: 5vh;\n  padding-bottom: 6vh;\n  border: 1px solid #4a4a4a;\n  border-radius: 10px;\n  box-shadow: 0 0 5px #2e2e2e;\n  background-color: #2e2e2e;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.keyboard-nav {\n  width: 60vw;\n  height: 50px;\n  display: block;\n  border: 1px solid black;\n  background-color: gray;\n  padding: 1vw;\n}", ""]);
+exports.push([module.i, ".keyboard {\n  width: 70vw;\n  padding-top: 2vw;\n  padding-bottom: 2vw;\n  border: 1px solid #4a4a4a;\n  border-radius: 10px;\n  box-shadow: 0 0 5px #2e2e2e;\n  background-color: #2e2e2e;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.keyboard-nav {\n  width: 60vw;\n  height: 3vw;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  border-radius: 5px;\n  background-color: #ffeda0;\n  box-shadow: inset 0 0 3px black;\n  padding: 1vw;\n  margin-bottom: 1vw;\n}\n\n.keyboard-nav div {\n  border: 1px solid black;\n  border-radius: 3px;\n  background-color: #fae173; \n  width: 8vw;\n  font-size: 1.2vw;\n  text-align: center;\n  vertical-align: middle;\n  line-height: 3vw;\n}", ""]);
 
 // exports
 
@@ -1312,7 +1313,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ".keys {\n  width: 60vw;\n  --total-width: 60vw;\n  background-color: lightgray;\n  border: 1px solid #4a4a4a;\n  border-radius: 5px;\n  padding: 1vw;\n  box-shadow: inset 0 0 5px black;\n\n}\n\n.keys img {\n  max-height: calc(var(--total-width) * (60 / 930));\n  width: auto;\n  height: auto;\n  margin-right: calc(var(--total-width) * (10 / 930));\n  border-radius: 5px;\n  box-shadow: 0 0 5px black;\n}\n\n.row1 {\n  display: flex;\n  padding-left: calc(var(--total-width) * (70 / 930));\n  padding-bottom: calc(var(--total-width) * (10 / 930));\n}\n\n.row2 {\n  display: flex;\n  padding-bottom: calc(var(--total-width) * (10 / 930));\n}\n\n.row3 {\n  display: flex;\n  padding-left: calc(var(--total-width) * (120 / 930));\n  padding-bottom: calc(var(--total-width) * (10 / 930));\n}\n\n.row4 {\n  display: flex;\n  padding-left: calc(var(--total-width) * (140 / 930));\n}\n\n.extra-space {\n  margin-left: calc(var(--total-width) * (70 / 930));\n}\n", ""]);
+exports.push([module.i, ".keys {\n  width: 60vw;\n  --total-width: 60vw;\n  background-color: silver;\n  border: 1px solid #4a4a4a;\n  border-radius: 5px;\n  padding: 1vw;\n  box-shadow: inset 0 0 5px black;\n\n}\n\n.keys img {\n  max-height: calc(var(--total-width) * (60 / 930));\n  width: auto;\n  height: auto;\n  margin-right: calc(var(--total-width) * (10 / 930));\n  border-radius: 5px;\n  box-shadow: 0 0 5px black;\n}\n\n.row1 {\n  display: flex;\n  padding-left: calc(var(--total-width) * (70 / 930));\n  padding-bottom: calc(var(--total-width) * (10 / 930));\n}\n\n.row2 {\n  display: flex;\n  padding-bottom: calc(var(--total-width) * (10 / 930));\n}\n\n.row3 {\n  display: flex;\n  padding-left: calc(var(--total-width) * (120 / 930));\n  padding-bottom: calc(var(--total-width) * (10 / 930));\n}\n\n.row4 {\n  display: flex;\n  padding-left: calc(var(--total-width) * (140 / 930));\n}\n\n.extra-space {\n  margin-left: calc(var(--total-width) * (70 / 930));\n}\n", ""]);
 
 // exports
 

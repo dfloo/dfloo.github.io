@@ -1,7 +1,8 @@
 class Sound {
 
-  constructor(ctx) {
+  constructor(ctx, wave) {
     this.ctx = ctx;
+    this.wave = wave;
   }
 
   init() {
@@ -10,7 +11,7 @@ class Sound {
 
     this.oscillator.connect(this.gainNode);
     this.gainNode.connect(this.ctx.destination);
-    this.oscillator.type = 'sine';
+    this.oscillator.type = this.wave;
   }
 
   play(value, time) {

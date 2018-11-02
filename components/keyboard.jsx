@@ -5,7 +5,7 @@ import Sound from './sound';
 import Keys from './keys';
 import Canvas from './canvas';
 
-import { getFreq, getColor } from './util'
+import { getFreq, getColor } from './keyboard-util'
 
 
 class Keyboard extends React.Component {
@@ -14,7 +14,8 @@ class Keyboard extends React.Component {
     super(props);
 
     this.state = {
-      vis: 1
+      vis: 2,
+      wave: 'square'
     }
 
     this.child = React.createRef();
@@ -27,35 +28,39 @@ class Keyboard extends React.Component {
     const keys = document.getElementsByClassName('key')
     for (let i = 0; i < keys.length; i++) {
       keys[i].addEventListener('click', () => {
-        this.playSound(keys[i].getAttribute('data-freq'));
+        this.playSound(keys[i].getAttribute('data-key'));
       });
     }
 
     document.addEventListener('keydown', (e) => {
       e.preventDefault();
-      this.playKeySound(e.key)
+      this.playSound(e.key)
     });
   }
 
-  playSound(freq) {
+  playSound(key) {
+    const freq = getFreq(key);
     if (freq) {
-      let note = new Sound(this.ctx);
+      let note = new Sound(this.ctx, this.state.wave);
       let now = this.ctx.currentTime;
       note.play(freq, now);
       note.stop(now);
     }
+    this.handleAnimation(key)
   }
 
-  playKeySound(key) {
-    console.log(key);
-    const freq = getFreq(key);
-    this.playSound(freq);
-    this.handleAnimation(key);1
-  }
 
   handleAnimation(key) {
-    // this.child.drawRainbow(getColor(key));
-    this.child.drawChangingRainbow();
+    switch(this.state.vis) {
+      case 1:
+        this.child.drawCircle(getColor(key));
+        break;
+      case 2:
+        this.child.drawRainbow();
+        break;
+      default:
+        this.child.drawRainbow();
+    }
   }
 
   render() {
@@ -65,7 +70,11 @@ class Keyboard extends React.Component {
         <Canvas onRef={ref => (this.child = ref)}/>
         <div className='keyboard'>
           <div className='keyboard-nav'>
-            <h1>Settings</h1>
+            <div>Volume</div>
+            <div>Synth Wave</div>
+            <div>Filter</div>
+            <div>Visualization</div>
+            <div>About</div>
           </div>
           <div className='keyboard-inner'>
             <Keys />

@@ -18,7 +18,7 @@ class Canvas extends React.Component {
     ctx.font = '40px Arial';
     ctx.fillText(
       'Welcome to Musical Typewriter', 
-      (ctx.canvas.width / 2) - 300, 250);
+      (ctx.canvas.width / 2) - 300, 175);
   }
 
   drawCircle(color) {
@@ -80,6 +80,59 @@ class Canvas extends React.Component {
     draw();
   }
 
+  drawFire() {
+    const ctx = this.refs.canvas.getContext("2d");
+    ctx.canvas.width = window.innerWidth * 0.7;
+    ctx.canvas.height = window.innerHeight * 0.4;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.globalCompositeOperation='lighter';
+
+    const particles = [];
+    const speed = 3;
+    const size = 20;
+    const max = 60;
+    
+    
+    const Particle = (x, y, xs, ys) => {
+      this.x, this.y = x, y;
+      this.xs, this.ys = xs, ys;
+      this.life = 0;
+    }
+    
+    
+    function draw() {
+      for (let i = 0; i < 10; i++) {
+        let p = new Particle(
+          ctx.canvas.width / 2, 
+          ctx.canvas.height,
+          (Math.random()*2*speed-speed)/2, 
+          0 - Math.random()*2*speed
+        );
+        particles.push(p);
+      }
+        
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        
+      for (let i = 0; i < particles.length; i++) {
+        ctx.fillStyle = 'rgba('+(260-(particles[i].life*2))+','+((particles[i].life*2)+50)+','+(particles[i].life*2)+','+(((max-particles[i].life)/max)*0.4)+')';
+        ctx.beginPath();
+        ctx.arc(particles[i].x, particles[i].y, (max-particles[i].life)/max*(size/2)+(size/2),0,2*Math.PI);
+        ctx.fill();
+        particles[i].x+=particles[i].xs;
+        particles[i].y+=particles[i].ys;
+        
+        particles[i].life++;
+        
+        if (particles[i].life >= max) {
+          particles.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    draw();
+    }
+    
   render() {
 
     return (

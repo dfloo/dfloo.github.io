@@ -26,7 +26,7 @@ class Sound {
 
   stop(time) {
     this.gainNode.gain.exponentialRampToValueAtTime(0.001, time + 1);
-    this.oscillator.stop(time + 1);
+    this.oscillator.stop(time);
   }
 }
 

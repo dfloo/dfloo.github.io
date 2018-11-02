@@ -147,7 +147,7 @@ function (_React$Component) {
       ctx.canvas.height = window.innerHeight * 0.4;
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
       ctx.font = '40px Arial';
-      ctx.fillText('Welcome to Musical Typewriter', ctx.canvas.width / 2 - 300, 250);
+      ctx.fillText('Welcome to Musical Typewriter', ctx.canvas.width / 2 - 300, 175);
     }
   }, {
     key: "drawCircle",
@@ -197,6 +197,53 @@ function (_React$Component) {
           requestAnimationFrame(draw);
         } else {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+      }
+
+      draw();
+    }
+  }, {
+    key: "drawFire",
+    value: function drawFire() {
+      var _this = this;
+
+      var ctx = this.refs.canvas.getContext("2d");
+      ctx.canvas.width = window.innerWidth * 0.7;
+      ctx.canvas.height = window.innerHeight * 0.4;
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      ctx.globalCompositeOperation = 'lighter';
+      var particles = [];
+      var speed = 3;
+      var size = 20;
+      var max = 60;
+
+      var Particle = function Particle(x, y, xs, ys) {
+        _this.x, _this.y = x, y;
+        _this.xs, _this.ys = xs, ys;
+        _this.life = 0;
+      };
+
+      function draw() {
+        for (var i = 0; i < 10; i++) {
+          var p = new Particle(ctx.canvas.width / 2, ctx.canvas.height, (Math.random() * 2 * speed - speed) / 2, 0 - Math.random() * 2 * speed);
+          particles.push(p);
+        }
+
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        for (var _i = 0; _i < particles.length; _i++) {
+          ctx.fillStyle = 'rgba(' + (260 - particles[_i].life * 2) + ',' + (particles[_i].life * 2 + 50) + ',' + particles[_i].life * 2 + ',' + (max - particles[_i].life) / max * 0.4 + ')';
+          ctx.beginPath();
+          ctx.arc(particles[_i].x, particles[_i].y, (max - particles[_i].life) / max * (size / 2) + size / 2, 0, 2 * Math.PI);
+          ctx.fill();
+          particles[_i].x += particles[_i].xs;
+          particles[_i].y += particles[_i].ys;
+          particles[_i].life++;
+
+          if (particles[_i].life >= max) {
+            particles.splice(_i, 1);
+            _i--;
+          }
         }
       }
 
@@ -374,13 +421,15 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Keyboard).call(this, props));
     _this.state = {
-      vis: 2,
-      wave: 'square'
+      vis: 3,
+      wave: 'sine'
     };
     _this.child = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     _this.playSound = _this.playSound.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.playFreq = _this.playFreq.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.handleAnimation = _this.handleAnimation.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.playDemo = _this.playDemo.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -413,13 +462,18 @@ function (_React$Component) {
       var freq = Object(_keyboard_util__WEBPACK_IMPORTED_MODULE_5__["getFreq"])(key);
 
       if (freq) {
-        var note = new _sound__WEBPACK_IMPORTED_MODULE_2__["default"](this.ctx, this.state.wave);
-        var now = this.ctx.currentTime;
-        note.play(freq, now);
-        note.stop(now);
+        this.playFreq(freq);
       }
 
       this.handleAnimation(key);
+    }
+  }, {
+    key: "playFreq",
+    value: function playFreq(freq) {
+      var note = new _sound__WEBPACK_IMPORTED_MODULE_2__["default"](this.ctx, this.state.wave);
+      var now = this.ctx.currentTime;
+      note.play(freq, now);
+      note.stop(now + 1);
     }
   }, {
     key: "handleAnimation",
@@ -433,9 +487,142 @@ function (_React$Component) {
           this.child.drawRainbow();
           break;
 
+        case 3:
+          this.child.drawFire();
+          break;
+
         default:
           this.child.drawRainbow();
       }
+    }
+  }, {
+    key: "playDemo",
+    value: function playDemo() {
+      var temp = 350;
+      setTimeout(this.playFreq, 0, 493.9);
+      setTimeout(this.handleAnimation, 0, "Tab");
+      setTimeout(this.playFreq, temp, 493.9);
+      setTimeout(this.handleAnimation, temp, "1");
+      setTimeout(this.playFreq, 2 * temp, 523.3);
+      setTimeout(this.handleAnimation, 2 * temp, "q");
+      setTimeout(this.playFreq, 3 * temp, 587.33);
+      setTimeout(this.handleAnimation, 3 * temp, "2");
+      setTimeout(this.playFreq, 4 * temp, 587.33);
+      setTimeout(this.handleAnimation, 4 * temp, "w");
+      setTimeout(this.playFreq, 5 * temp, 523.3);
+      setTimeout(this.handleAnimation, 5 * temp, "e");
+      setTimeout(this.playFreq, 6 * temp, 493.9);
+      setTimeout(this.handleAnimation, 6 * temp, "4");
+      setTimeout(this.playFreq, 7 * temp, 440);
+      setTimeout(this.handleAnimation, 7 * temp, "r");
+      setTimeout(this.playFreq, 8 * temp, 392);
+      setTimeout(this.handleAnimation, 8 * temp, '5');
+      setTimeout(this.playFreq, 9 * temp, 392);
+      setTimeout(this.handleAnimation, 9 * temp, "t");
+      setTimeout(this.playFreq, 10 * temp, 440);
+      setTimeout(this.handleAnimation, 10 * temp, "6");
+      setTimeout(this.playFreq, 11 * temp, 493.9);
+      setTimeout(this.handleAnimation, 11 * temp, "y");
+      setTimeout(this.playFreq, 12 * temp, 493.9);
+      setTimeout(this.handleAnimation, 12 * temp, "u");
+      setTimeout(this.playFreq, 13.5 * temp, 440);
+      setTimeout(this.handleAnimation, 13.5 * temp, "8");
+      setTimeout(this.playFreq, 14 * temp, 440);
+      setTimeout(this.handleAnimation, 14 * temp, "i");
+      setTimeout(this.playFreq, 16 * temp, 493.9);
+      setTimeout(this.handleAnimation, 16 * temp, "9");
+      setTimeout(this.playFreq, 17 * temp, 493.9);
+      setTimeout(this.handleAnimation, 17 * temp, "o");
+      setTimeout(this.playFreq, 18 * temp, 523.3);
+      setTimeout(this.handleAnimation, 18 * temp, "p");
+      setTimeout(this.playFreq, 19 * temp, 587.33);
+      setTimeout(this.handleAnimation, 19 * temp, "a");
+      setTimeout(this.playFreq, 20 * temp, 587.33);
+      setTimeout(this.handleAnimation, 20 * temp, "z");
+      setTimeout(this.playFreq, 21 * temp, 523.3);
+      setTimeout(this.handleAnimation, 21 * temp, "s");
+      setTimeout(this.playFreq, 22 * temp, 493.9);
+      setTimeout(this.handleAnimation, 22 * temp, "x");
+      setTimeout(this.playFreq, 23 * temp, 440);
+      setTimeout(this.handleAnimation, 23 * temp, "d");
+      setTimeout(this.playFreq, 24 * temp, 392);
+      setTimeout(this.handleAnimation, 24 * temp, "c");
+      setTimeout(this.playFreq, 25 * temp, 392);
+      setTimeout(this.handleAnimation, 25 * temp, "v");
+      setTimeout(this.playFreq, 26 * temp, 440);
+      setTimeout(this.handleAnimation, 26 * temp, "g");
+      setTimeout(this.playFreq, 27 * temp, 493.9);
+      setTimeout(this.handleAnimation, 27 * temp, "b");
+      setTimeout(this.playFreq, 26 * temp, 440);
+      setTimeout(this.handleAnimation, 26 * temp, "h");
+      setTimeout(this.playFreq, 27.5 * temp, 392);
+      setTimeout(this.handleAnimation, 27.5 * temp, "n");
+      setTimeout(this.playFreq, 28 * temp, 392);
+      setTimeout(this.handleAnimation, 28 * temp, "m");
+      setTimeout(this.playFreq, 30 * temp, 440);
+      setTimeout(this.handleAnimation, 30 * temp, "k");
+      setTimeout(this.playFreq, 31 * temp, 440);
+      setTimeout(this.handleAnimation, 31 * temp, ",");
+      setTimeout(this.playFreq, 32 * temp, 493.9);
+      setTimeout(this.handleAnimation, 32 * temp, "l");
+      setTimeout(this.playFreq, 33 * temp, 392);
+      setTimeout(this.handleAnimation, 33 * temp, ".");
+      setTimeout(this.playFreq, 34 * temp, 440);
+      setTimeout(this.handleAnimation, 34 * temp, ";");
+      setTimeout(this.playFreq, 35 * temp, 493.9);
+      setTimeout(this.handleAnimation, 35 * temp, "/");
+      setTimeout(this.playFreq, 35.5 * temp, 523.3);
+      setTimeout(this.handleAnimation, 35.5 * temp, "Shift");
+      setTimeout(this.playFreq, 36 * temp, 493.9);
+      setTimeout(this.handleAnimation, 36 * temp, "d");
+      setTimeout(this.playFreq, 37 * temp, 392);
+      setTimeout(this.handleAnimation, 37 * temp, "e");
+      setTimeout(this.playFreq, 38 * temp, 440);
+      setTimeout(this.handleAnimation, 38 * temp, "v");
+      setTimeout(this.playFreq, 39 * temp, 493.9);
+      setTimeout(this.handleAnimation, 39 * temp, "i");
+      setTimeout(this.playFreq, 39.5 * temp, 523.3);
+      setTimeout(this.handleAnimation, 39.5 * temp, "n");
+      setTimeout(this.playFreq, 40 * temp, 493.9);
+      setTimeout(this.handleAnimation, 40 * temp, "d");
+      setTimeout(this.playFreq, 41 * temp, 440);
+      setTimeout(this.handleAnimation, 41 * temp, "e");
+      setTimeout(this.playFreq, 42 * temp, 392);
+      setTimeout(this.handleAnimation, 42 * temp, "v");
+      setTimeout(this.playFreq, 43 * temp, 440);
+      setTimeout(this.handleAnimation, 43 * temp, "i");
+      setTimeout(this.playFreq, 44 * temp, 554.37);
+      setTimeout(this.handleAnimation, 44 * temp, "n");
+      setTimeout(this.playFreq, 46 * temp, 493.9);
+      setTimeout(this.handleAnimation, 46 * temp, "d");
+      setTimeout(this.playFreq, 47 * temp, 493.9);
+      setTimeout(this.handleAnimation, 47 * temp, "e");
+      setTimeout(this.playFreq, 48 * temp, 523.3);
+      setTimeout(this.handleAnimation, 48 * temp, "v");
+      setTimeout(this.playFreq, 49 * temp, 587.33);
+      setTimeout(this.handleAnimation, 49 * temp, "i");
+      setTimeout(this.playFreq, 50 * temp, 587.33);
+      setTimeout(this.handleAnimation, 50 * temp, "n");
+      setTimeout(this.playFreq, 51 * temp, 523.3);
+      setTimeout(this.handleAnimation, 51 * temp, "d");
+      setTimeout(this.playFreq, 52 * temp, 493.9);
+      setTimeout(this.handleAnimation, 52 * temp, "e");
+      setTimeout(this.playFreq, 53 * temp, 440);
+      setTimeout(this.handleAnimation, 53 * temp, "v");
+      setTimeout(this.playFreq, 54 * temp, 392);
+      setTimeout(this.handleAnimation, 54 * temp, "i");
+      setTimeout(this.playFreq, 55 * temp, 392);
+      setTimeout(this.handleAnimation, 55 * temp, "n");
+      setTimeout(this.playFreq, 56 * temp, 440);
+      setTimeout(this.handleAnimation, 56 * temp, "d");
+      setTimeout(this.playFreq, 57 * temp, 493.9);
+      setTimeout(this.handleAnimation, 57 * temp, "e");
+      setTimeout(this.playFreq, 58 * temp, 440);
+      setTimeout(this.handleAnimation, 58 * temp, "v");
+      setTimeout(this.playFreq, 59.5 * temp, 392);
+      setTimeout(this.handleAnimation, 59.5 * temp, "i");
+      setTimeout(this.playFreq, 60 * temp, 392);
+      setTimeout(this.handleAnimation, 60 * temp, "n");
     }
   }, {
     key: "render",
@@ -452,7 +639,9 @@ function (_React$Component) {
         className: "keyboard"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-nav"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Volume"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Synth Wave"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Filter"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Visualization"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "About")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Volume"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Synth Wave"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Filter"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Visualization"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        onClick: this.playDemo
+      }, "About")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-inner"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_keys__WEBPACK_IMPORTED_MODULE_3__["default"], null))));
     }
@@ -770,7 +959,7 @@ function () {
     key: "stop",
     value: function stop(time) {
       this.gainNode.gain.exponentialRampToValueAtTime(0.001, time + 1);
-      this.oscillator.stop(time + 1);
+      this.oscillator.stop(time);
     }
   }]);
 

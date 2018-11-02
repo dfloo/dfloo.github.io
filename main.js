@@ -99,6 +99,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+function _construct(Parent, args, Class) { if (isNativeReflectConstruct()) { _construct = Reflect.construct; } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -205,8 +209,6 @@ function (_React$Component) {
   }, {
     key: "drawFire",
     value: function drawFire() {
-      var _this = this;
-
       var ctx = this.refs.canvas.getContext("2d");
       ctx.canvas.width = window.innerWidth * 0.7;
       ctx.canvas.height = window.innerHeight * 0.4;
@@ -217,27 +219,33 @@ function (_React$Component) {
       var size = 20;
       var max = 60;
 
-      var Particle = function Particle(x, y, xs, ys) {
-        _this.x, _this.y = x, y;
-        _this.xs, _this.ys = xs, ys;
-        _this.life = 0;
-      };
+      function Particle(x, y, dx, dy) {
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.life = 0;
+      }
 
-      function draw() {
+      var start = [Math.random() * ctx.canvas.width, ctx.canvas.height];
+      var startFire = setInterval(function () {
         for (var i = 0; i < 10; i++) {
-          var p = new Particle(ctx.canvas.width / 2, ctx.canvas.height, (Math.random() * 2 * speed - speed) / 2, 0 - Math.random() * 2 * speed);
+          var options = [start[0], start[1], (Math.random() * 2 * speed - speed) / 2, 0 - Math.random() * 2 * speed];
+
+          var p = _construct(Particle, options);
+
           particles.push(p);
         }
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
         for (var _i = 0; _i < particles.length; _i++) {
-          ctx.fillStyle = 'rgba(' + (260 - particles[_i].life * 2) + ',' + (particles[_i].life * 2 + 50) + ',' + particles[_i].life * 2 + ',' + (max - particles[_i].life) / max * 0.4 + ')';
+          ctx.fillStyle = "rgba(" + (260 - particles[_i].life * 2) + "," + (particles[_i].life * 2 + 50) + "," + particles[_i].life * 2 + "," + (max - particles[_i].life) / max * 0.4 + ")";
           ctx.beginPath();
           ctx.arc(particles[_i].x, particles[_i].y, (max - particles[_i].life) / max * (size / 2) + size / 2, 0, 2 * Math.PI);
           ctx.fill();
-          particles[_i].x += particles[_i].xs;
-          particles[_i].y += particles[_i].ys;
+          particles[_i].x += particles[_i].dx;
+          particles[_i].y += particles[_i].dy;
           particles[_i].life++;
 
           if (particles[_i].life >= max) {
@@ -245,9 +253,11 @@ function (_React$Component) {
             _i--;
           }
         }
-      }
-
-      draw();
+      }, 40);
+      setTimeout(function () {
+        clearInterval(startFire);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      }, 1000);
     }
   }, {
     key: "render",

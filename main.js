@@ -218,7 +218,7 @@ function (_React$Component) {
       var particles = [];
       var speed = 4;
       var size = 20;
-      var max = 60;
+      var max = 50;
 
       function Particle(x, y, dx, dy) {
         this.x = x;
@@ -256,7 +256,7 @@ function (_React$Component) {
           }
         }
 
-        if (Date.now() < time + 1000) {
+        if (Date.now() < time + 1500) {
           requestAnimationFrame(startFire);
         } else {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -402,6 +402,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _keyboard_util__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./keyboard-util */ "./components/keyboard-util.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -437,15 +439,16 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Keyboard).call(this, props));
     _this.state = {
-      vis: 3,
+      vis: 'fire',
       wave: 'sine',
-      vol: 10
+      vol: 'off'
     };
     _this.child = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.ctx = new (window.AudioContext || window.webkitAudioContext)();
     _this.playSound = _this.playSound.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.playFreq = _this.playFreq.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.handleAnimation = _this.handleAnimation.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this.handleClick = _this.handleClick.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this.playDemo = _this.playDemo.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
@@ -489,28 +492,36 @@ function (_React$Component) {
     value: function playFreq(freq) {
       var note = new _sound__WEBPACK_IMPORTED_MODULE_2__["default"](this.ctx, this.state.wave);
       var now = this.ctx.currentTime;
-      note.play(freq, now);
-      note.stop(now + 1);
+
+      if (this.state.vol === 'on') {
+        note.play(freq, now);
+        note.stop(now + 1);
+      }
     }
   }, {
     key: "handleAnimation",
     value: function handleAnimation(key) {
       switch (this.state.vis) {
-        case 1:
+        case 'dots':
           this.child.drawCircle(Object(_keyboard_util__WEBPACK_IMPORTED_MODULE_5__["getColor"])(key));
           break;
 
-        case 2:
+        case 'rainbow':
           this.child.drawRainbow();
           break;
 
-        case 3:
+        case 'fire':
           this.child.drawFire();
           break;
 
         default:
           this.child.drawRainbow();
       }
+    }
+  }, {
+    key: "handleClick",
+    value: function handleClick(key, val) {
+      this.setState(_defineProperty({}, key, val));
     }
   }, {
     key: "playDemo",
@@ -608,7 +619,7 @@ function (_React$Component) {
       setTimeout(this.handleAnimation, 42 * temp, "v");
       setTimeout(this.playFreq, 43 * temp, 440);
       setTimeout(this.handleAnimation, 43 * temp, "i");
-      setTimeout(this.playFreq, 44 * temp, 554.37);
+      setTimeout(this.playFreq, 44 * temp, 587.33);
       setTimeout(this.handleAnimation, 44 * temp, "n");
       setTimeout(this.playFreq, 46 * temp, 493.9);
       setTimeout(this.handleAnimation, 46 * temp, "d");
@@ -656,9 +667,80 @@ function (_React$Component) {
         className: "keyboard"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-nav"
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Volume"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Synth Wave"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Filter"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Visualization"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "vol-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Volume"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "dropdown vol"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "vol1",
+        onClick: function onClick() {
+          return _this3.handleClick('vol', 'on');
+        }
+      }, "On"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "vol2",
+        onClick: function onClick() {
+          return _this3.handleClick('vol', 'off');
+        }
+      }, "Off"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "wave-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Synth Wave"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "dropdown wave"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "wave1",
+        onClick: function onClick() {
+          return _this3.handleClick('wave', 'sine');
+        }
+      }, "Sine"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "wave2",
+        onClick: function onClick() {
+          return _this3.handleClick('wave', 'square');
+        }
+      }, "Square"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "wave3",
+        onClick: function onClick() {
+          return _this3.handleClick('wave', 'triangle');
+        }
+      }, "Triangle"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "wave4",
+        onClick: function onClick() {
+          return _this3.handleClick('wave', 'sawtooth');
+        }
+      }, "Sawtooth"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "vis-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "Visualization"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "dropdown vis"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "vis1",
+        onClick: function onClick() {
+          return _this3.handleClick('vis', 'rainbow');
+        }
+      }, "Rainbow"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "vis2",
+        onClick: function onClick() {
+          return _this3.handleClick('vis', 'dots');
+        }
+      }, "Dots"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "vis3",
+        onClick: function onClick() {
+          return _this3.handleClick('vis', 'fire');
+        }
+      }, "Fire"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "demo-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         onClick: this.playDemo
-      }, "About")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, "Demo")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "about-btn"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, "About"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "dropdown about"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "about1"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "https://github.com/dfloo"
+      }, "Github")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "about1"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "https://linkedin.com/in/dfloo"
+      }, "Linkedin"))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "keyboard-inner"
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_keys__WEBPACK_IMPORTED_MODULE_3__["default"], null))));
     }
@@ -1500,7 +1582,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/li
 
 
 // module
-exports.push([module.i, ".keyboard {\n  width: 70vw;\n  padding-top: 2vw;\n  padding-bottom: 2vw;\n  border: 1px solid #4a4a4a;\n  border-radius: 10px;\n  box-shadow: 0 0 5px #2e2e2e;\n  background-color: #2e2e2e;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.keyboard-nav {\n  width: 60vw;\n  height: 3vw;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  border-radius: 5px;\n  background-color: #ffeda0;\n  box-shadow: inset 0 0 3px black;\n  padding: 1vw;\n  margin-bottom: 1vw;\n}\n\n.keyboard-nav div {\n  border: 1px solid black;\n  border-radius: 3px;\n  background-color: #fae173; \n  width: 8vw;\n  font-size: 1.2vw;\n  text-align: center;\n  vertical-align: middle;\n  line-height: 3vw;\n}", ""]);
+exports.push([module.i, ".keyboard {\n  width: 70vw;\n  padding-top: 2vw;\n  padding-bottom: 2vw;\n  border: 1px solid #4a4a4a;\n  border-radius: 10px;\n  box-shadow: 0 0 5px #2e2e2e;\n  background-color: #2e2e2e;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n}\n\n.keyboard-nav {\n  width: 60vw;\n  height: 3vw;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-around;\n  border-radius: 5px;\n  background-color: #ffeda0;\n  box-shadow: inset 0 0 3px #2e2e2e;\n  padding: 1vw;\n  margin-bottom: 1vw;\n  font-family: Arial, Helvetica, sans-serif;\n}\n\n.vol-btn, .wave-btn, .vis-btn, \n.demo-btn, .about-btn {\n  border: 1px solid #2e2e2e;\n  border-radius: 3px;\n  background-color: #fae173; \n  width: 8vw;\n  font-size: 1.2vw;\n  text-align: center;\n  vertical-align: middle;\n  line-height: 3vw;\n  position: relative;\n}\n\n.dropdown {\n  background-color: #fae173; \n  border: 1px solid #2e2e2e;\n  border-radius: 3px;\n  position: absolute;\n  bottom: 3vw;\n  left: -1px;\n  width: 8vw;\n  z-index: 1;\n  display: flex;\n  flex-direction: column;\n  justify-content: space-evenly;\n  display: none;\n}\n\n.vol-btn:hover, .wave-btn:hover, .vis-btn:hover, \n.demo-btn:hover, .about-btn:hover {\n  cursor: pointer;\n  background-color: #ffeda0;\n}\n\n.vol-btn:hover .vol {\n  display: block;\n}\n\n.wave-btn:hover .wave {\n  display: block;\n}\n\n.vis-btn:hover .vis {\n  display: block;\n}\n\n.about-btn:hover .about {\n  display: block;\n}\n\n.about a {\n  text-decoration: none;\n  color: black;\n}\n\n.vol1:hover, .vol2:hover, .wave1:hover, .wave2:hover,\n.wave3:hover, .wave4:hover, .vis1:hover, .vis2:hover, \n.vis3:hover, .about1:hover, .about2:hover {\n  background-color: #ffeda0;\n}\n\n\n\n\n\n", ""]);
 
 // exports
 

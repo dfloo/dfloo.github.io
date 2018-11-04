@@ -14,9 +14,9 @@ class Keyboard extends React.Component {
     super(props);
 
     this.state = {
-      vis: 3,
+      vis: 'fire',
       wave: 'sine',
-      vol: 10
+      vol: 'off'
     }
 
     this.child = React.createRef();
@@ -24,6 +24,7 @@ class Keyboard extends React.Component {
     this.playSound = this.playSound.bind(this);
     this.playFreq = this.playFreq.bind(this);
     this.handleAnimation = this.handleAnimation.bind(this)
+    this.handleClick = this.handleClick.bind(this);
     this.playDemo = this.playDemo.bind(this);
   }
 
@@ -52,25 +53,31 @@ class Keyboard extends React.Component {
   playFreq(freq) {
     let note = new Sound(this.ctx, this.state.wave);
     let now = this.ctx.currentTime;
-    note.play(freq, now);
-    note.stop(now + 1);
+    if (this.state.vol === 'on') {
+      note.play(freq, now);
+      note.stop(now + 1);
+    }
   }
 
 
   handleAnimation(key) {
     switch(this.state.vis) {
-      case 1:
+      case 'dots':
         this.child.drawCircle(getColor(key));
         break;
-      case 2:
+      case 'rainbow':
         this.child.drawRainbow();
         break;
-      case 3:
+      case 'fire':
         this.child.drawFire();
         break;
       default:
         this.child.drawRainbow();
     }
+  }
+
+  handleClick(key, val) {
+    this.setState({[key]: val})
   }
 
   playDemo() {
@@ -179,7 +186,7 @@ class Keyboard extends React.Component {
     setTimeout(this.handleAnimation, 42 * temp, "v");
     setTimeout(this.playFreq, 43 * temp, 440);
     setTimeout(this.handleAnimation, 43 * temp, "i");
-    setTimeout(this.playFreq, 44 * temp, 554.37);
+    setTimeout(this.playFreq, 44 * temp, 587.33);  
     setTimeout(this.handleAnimation, 44 * temp, "n");
 
     setTimeout(this.playFreq, 46 * temp, 493.9);
@@ -220,23 +227,78 @@ class Keyboard extends React.Component {
 
   render() {
 
-    return (
-      <div className='audio-visual-div'>
-        <Canvas onRef={ref => (this.child = ref)}/>
-        <div className='keyboard'>
-          <div className='keyboard-nav'>
-            <div>Volume</div>
-            <div>Synth Wave</div>
-            <div>Filter</div>
-            <div>Visualization</div>
-            <div onClick={this.playDemo}>About</div>
+    return <div className="audio-visual-div">
+        <Canvas onRef={ref => (this.child = ref)} />
+        <div className="keyboard">
+          <div className="keyboard-nav">
+
+            <div className='vol-btn'>
+              <div>Volume</div>
+              <div className='dropdown vol'>
+                <div className='vol1' 
+                  onClick={() => this.handleClick('vol', 'on')}>On
+                </div>
+                <div className='vol2' 
+                  onClick={() => this.handleClick('vol','off')}>Off
+                </div>
+              </div>
+            </div>
+
+            <div className='wave-btn'>
+              <div>Synth Wave</div>
+              <div className='dropdown wave'>
+                <div className='wave1'
+                  onClick={() => this.handleClick('wave','sine')}>Sine
+                </div>
+                <div className='wave2'
+                  onClick={() => this.handleClick('wave','square')}>Square
+                </div>
+                <div className='wave3'
+                  onClick={() => this.handleClick('wave','triangle')}>Triangle
+                </div>
+                <div className='wave4'
+                  onClick={() => this.handleClick('wave','sawtooth')}>Sawtooth
+                </div>
+              </div>
+            </div>
+
+            <div className='vis-btn'>
+              <div>Visualization</div>
+              <div className='dropdown vis'>
+                <div className='vis1' 
+                  onClick={() => this.handleClick('vis','rainbow')}>Rainbow
+                </div>
+                <div className='vis2' 
+                  onClick={() => this.handleClick('vis','dots')}>Dots
+                </div>
+                <div className='vis3' 
+                  onClick={() => this.handleClick('vis','fire')}>Fire
+                </div>
+              </div>
+            </div>
+
+            <div className='demo-btn'>
+              <div onClick={this.playDemo}>Demo</div>
+            </div>
+
+            <div className='about-btn'>
+              <div>About</div>
+              <div className='dropdown about'>
+                <div className='about1'>
+                  <a href='https://github.com/dfloo'>Github</a>
+                </div>
+                <div className='about1'>
+                  <a href='https://linkedin.com/in/dfloo'>Linkedin</a>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <div className='keyboard-inner'>
+          <div className="keyboard-inner">
             <Keys />
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
 }
 

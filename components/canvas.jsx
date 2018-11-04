@@ -92,7 +92,7 @@ class Canvas extends React.Component {
     const particles = [];
     const speed = 4;
     const size = 20;
-    const max = 60;
+    const max = 50;
     
     
     function Particle(x, y, dx, dy) {
@@ -138,7 +138,7 @@ class Canvas extends React.Component {
           i--;
         }
       }
-      if (Date.now() < time + 1000) {
+      if (Date.now() < time + 1500) {
         requestAnimationFrame(startFire)
       } else {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

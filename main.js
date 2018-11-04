@@ -439,9 +439,9 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Keyboard).call(this, props));
     _this.state = {
-      vis: 'fire',
+      vis: 'dots',
       wave: 'sine',
-      vol: 'off'
+      vol: 'on'
     };
     _this.child = react__WEBPACK_IMPORTED_MODULE_0___default.a.createRef();
     _this.ctx = new (window.AudioContext || window.webkitAudioContext)();
